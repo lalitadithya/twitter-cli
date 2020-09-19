@@ -22,8 +22,13 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"bufio"
+	"errors"
 	"fmt"
+	"os"
 
+	"github.com/lalitadithya/twitter-cli/twitter"
+	"github.com/lalitadithya/twitter-cli/twitter/util"
 	"github.com/spf13/cobra"
 )
 
@@ -39,7 +44,40 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("authorize called")
+		processAuthorize()
 	},
+}
+
+func processAuthorize() {
+	client, err := twitter.LoadSecrets()
+	if err != nil {
+		if errors.Is(err, util.APIKeyMissingError) {
+			client = setClientSecrets()
+		} else {
+			panic(err)
+		}
+	}
+
+	fmt.Println(client)
+}
+
+func setClientSecrets() *twitter.TwitterClient {
+	fmt.Println("Need to get API keys")
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Print("Enter API Key: ")
+	apiKey, _ := reader.ReadString('\n')
+
+	fmt.Print("Enter API secret Key: ")
+	apiSecretKey, _ := reader.ReadString('\n')
+
+	client, err := twitter.SetSecrets(apiKey, apiSecretKey)
+	if err != nil {
+		fmt.Println("Unable to set secrets ", err)
+		os.Exit(1)
+	}
+
+	return client
 }
 
 func init() {
