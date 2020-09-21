@@ -26,6 +26,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/lalitadithya/twitter-cli/twitter"
 	"github.com/lalitadithya/twitter-cli/twitter/util"
@@ -58,7 +59,19 @@ func processAuthorize() {
 		}
 	}
 
-	fmt.Println(client)
+	fmt.Println("Fetching URL for PIN based auth")
+	authorizationURL, err := twitter.GetAuthorizationURL(client)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Please naviage to ", authorizationURL, " and copy the code displayed and paste the it here: ")
+	var pin string
+	fmt.Scanf("%s", &pin)
+
+	err = twitter.FetchAndSaveOAuthToken(client, pin)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func setClientSecrets() *twitter.TwitterClient {
@@ -71,7 +84,7 @@ func setClientSecrets() *twitter.TwitterClient {
 	fmt.Print("Enter API secret Key: ")
 	apiSecretKey, _ := reader.ReadString('\n')
 
-	client, err := twitter.SetSecrets(apiKey, apiSecretKey)
+	client, err := twitter.SetSecrets(strings.TrimSpace(apiKey), strings.TrimSpace(apiSecretKey))
 	if err != nil {
 		fmt.Println("Unable to set secrets ", err)
 		os.Exit(1)
