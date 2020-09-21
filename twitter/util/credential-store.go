@@ -1,6 +1,10 @@
 package util
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/spf13/viper"
+)
 
 type UserSecrets struct {
 	apiKey       string
@@ -11,41 +15,36 @@ type UserSecrets struct {
 
 var APIKeyMissingError = errors.New("API Key Missing")
 
-func (us *UserSecrets) LoadSecrets() error {
-	// load API key from storage
+func (us *UserSecrets) LoadConsumerSecrets() error {
+	us.apiKey = viper.GetString("ConsumerAPIKey")
 	if len(us.apiKey) == 0 {
 		return APIKeyMissingError
 	}
 
-	// load API secret key from storage
+	us.apiKey = viper.GetString("ConsumerAPISecretKey")
 	if len(us.apiSecretKey) == 0 {
-		return APIKeyMissingError
-	}
-
-	// load access token from storage
-	if len(us.accessToken) == 0 {
 		return APIKeyMissingError
 	}
 
 	return nil
 }
 
-func (us *UserSecrets) SetSecrets(apiKey, apiSecretKey string) error {
+func (us *UserSecrets) SetConsumerSecrets(apiKey, apiSecretKey string) error {
 	us.apiKey = apiKey
 	us.apiSecretKey = apiSecretKey
 
-	// save them to persistant storage
-
-	return nil
+	viper.Set("ConsumerAPIKey", us.apiKey)
+	viper.Set("ConsumerAPISecretKey", us.apiSecretKey)
+	return viper.WriteConfig()
 }
 
 func (us *UserSecrets) SetAccessSecrets(accessToken, accessSecret string) error {
 	us.accessToken = accessToken
 	us.accessSecret = accessSecret
 
-	// save them to persistant storage
-
-	return nil
+	viper.Set("AccessToken", us.accessToken)
+	viper.Set("AccessSecret", us.accessSecret)
+	return viper.WriteConfig()
 }
 
 func (us *UserSecrets) GetConsumerKey() string {

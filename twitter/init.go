@@ -10,7 +10,7 @@ func LoadSecrets() (*TwitterClient, error) {
 	twitterClient := &TwitterClient{
 		userSecrets: &util.UserSecrets{},
 	}
-	loadErr := twitterClient.userSecrets.LoadSecrets()
+	loadErr := twitterClient.userSecrets.LoadConsumerSecrets()
 	if loadErr != nil {
 		return nil, loadErr
 	}
@@ -22,7 +22,7 @@ func SetSecrets(apiKey, apiSecretKey string) (*TwitterClient, error) {
 	twitterClient := &TwitterClient{
 		userSecrets: &util.UserSecrets{},
 	}
-	setErr := twitterClient.userSecrets.SetSecrets(apiKey, apiSecretKey)
+	setErr := twitterClient.userSecrets.SetConsumerSecrets(apiKey, apiSecretKey)
 	if setErr != nil {
 		return nil, setErr
 	}

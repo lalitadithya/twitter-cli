@@ -24,6 +24,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/spf13/cobra"
 
@@ -75,6 +76,11 @@ func init() {
 func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
+		_, err := os.Stat(cfgFile)
+		if os.IsNotExist(err) {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 		viper.SetConfigFile(cfgFile)
 	} else {
 		// Find home directory.
@@ -84,15 +90,26 @@ func initConfig() {
 			os.Exit(1)
 		}
 
+		configName := ".twitter-cli"
 		// Search config in home directory with name ".twitter-cli" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".twitter-cli")
+		viper.AddConfigPath(home + "\\")
+		viper.SetConfigName(configName)
+
+		emptyFile, err := os.Create(path.Join(home, configName+".yaml"))
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		emptyFile.Close()
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
+	viper.SetConfigType("yaml")
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	} else {
+		fmt.Println("ERROR reading config ", err)
 	}
 }
