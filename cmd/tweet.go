@@ -27,6 +27,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var statusText string
+
 // tweetCmd represents the tweet command
 var tweetCmd = &cobra.Command{
 	Use:   "tweet",
@@ -38,8 +40,13 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("tweet called")
+		processTweet()
 	},
+}
+
+func processTweet() {
+	fmt.Println("tweet called")
+	fmt.Println("Status is ", statusText)
 }
 
 func init() {
@@ -53,5 +60,7 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// tweetCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	tweetCmd.Flags().StringVarP(&statusText, "status", "s", "", "The contents of the tweet")
+	tweetCmd.MarkFlagRequired("status")
 }
