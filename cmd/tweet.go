@@ -60,7 +60,7 @@ func processTweet() {
 		}
 	}
 
-	fmt.Println(twitterClient)
+	twitter.PostStatusUpdate(twitterClient, statusText)
 }
 
 func init() {

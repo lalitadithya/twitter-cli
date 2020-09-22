@@ -21,7 +21,7 @@ func (us *UserSecrets) LoadConsumerSecrets() error {
 		return APIKeyMissingError
 	}
 
-	us.apiKey = viper.GetString("ConsumerAPISecretKey")
+	us.apiSecretKey = viper.GetString("ConsumerAPISecretKey")
 	if len(us.apiSecretKey) == 0 {
 		return APIKeyMissingError
 	}
@@ -71,4 +71,8 @@ func (us *UserSecrets) GetConsumerSecret() string {
 
 func (us *UserSecrets) GetAccessToken() string {
 	return us.accessToken
+}
+
+func (us *UserSecrets) GetAccessSecret() string {
+	return us.accessSecret
 }
