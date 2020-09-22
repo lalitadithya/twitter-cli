@@ -49,9 +49,6 @@ to quickly create a Cobra application.`,
 }
 
 func processTweet() {
-	fmt.Println("tweet called")
-	fmt.Println("Status is ", statusText)
-
 	twitterClient, err := twitter.GetAuthorizedClient()
 	if err != nil {
 		if errors.Is(err, util.APIKeyMissingError) {

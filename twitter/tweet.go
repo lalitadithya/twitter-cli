@@ -21,8 +21,10 @@ func PostStatusUpdate(client *TwitterClient, statusText string) error {
 		fmt.Println(err)
 		return err
 	}
-	body, _ := ioutil.ReadAll(res.Body)
-	fmt.Println(string(body))
-	//resp, err := httpClient.Post(route, )
+
+	if res.StatusCode != 200 {
+		body, _ := ioutil.ReadAll(res.Body)
+		return fmt.Errorf("%s", string(body))
+	}
 	return nil
 }
