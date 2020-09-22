@@ -95,12 +95,16 @@ func initConfig() {
 		viper.AddConfigPath(home + "\\")
 		viper.SetConfigName(configName)
 
-		emptyFile, err := os.Create(path.Join(home, configName+".yaml"))
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+		configFilePath := path.Join(home, configName+".yaml")
+		_, err = os.Stat(configFilePath)
+		if os.IsNotExist(err) {
+			emptyFile, err := os.Create(configFilePath)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			emptyFile.Close()
 		}
-		emptyFile.Close()
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
