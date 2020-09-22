@@ -38,6 +38,20 @@ func (us *UserSecrets) SetConsumerSecrets(apiKey, apiSecretKey string) error {
 	return viper.WriteConfig()
 }
 
+func (us *UserSecrets) LoadAccessSecrets() error {
+	us.accessToken = viper.GetString("AccessToken")
+	if len(us.accessToken) == 0 {
+		return APIKeyMissingError
+	}
+
+	us.accessSecret = viper.GetString("AccessSecret")
+	if len(us.accessSecret) == 0 {
+		return APIKeyMissingError
+	}
+
+	return nil
+}
+
 func (us *UserSecrets) SetAccessSecrets(accessToken, accessSecret string) error {
 	us.accessToken = accessToken
 	us.accessSecret = accessSecret

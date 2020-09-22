@@ -22,7 +22,11 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"errors"
 	"fmt"
+
+	"github.com/lalitadithya/twitter-cli/twitter"
+	"github.com/lalitadithya/twitter-cli/twitter/util"
 
 	"github.com/spf13/cobra"
 )
@@ -47,6 +51,16 @@ to quickly create a Cobra application.`,
 func processTweet() {
 	fmt.Println("tweet called")
 	fmt.Println("Status is ", statusText)
+
+	twitterClient, err := twitter.GetAuthorizedClient()
+	if err != nil {
+		if errors.Is(err, util.APIKeyMissingError) {
+			fmt.Println("API keys not found. Please run the authorize command first")
+			return
+		}
+	}
+
+	fmt.Println(twitterClient)
 }
 
 func init() {

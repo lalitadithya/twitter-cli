@@ -29,3 +29,15 @@ func SetSecrets(apiKey, apiSecretKey string) (*TwitterClient, error) {
 
 	return twitterClient, nil
 }
+
+func GetAuthorizedClient() (*TwitterClient, error) {
+	twitterClient := &TwitterClient{
+		userSecrets: &util.UserSecrets{},
+	}
+	loadErr := twitterClient.userSecrets.LoadAccessSecrets()
+	if loadErr != nil {
+		return nil, loadErr
+	}
+
+	return twitterClient, nil
+}
